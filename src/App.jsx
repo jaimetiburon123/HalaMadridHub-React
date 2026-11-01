@@ -1,6 +1,7 @@
 import ClubHeader from './components/ClubHeader.jsx';
 import MatchCentre from './components/MatchCentre.jsx';
-import Panel from './components/Panel.jsx';
+import SeasonPanel from './components/SeasonPanel.jsx';
+import SquadPanel from './components/SquadPanel.jsx';
 
 export default function App() {
   return (
@@ -8,12 +9,8 @@ export default function App() {
       <ClubHeader />
       <main>
         <MatchCentre />
-        <Panel title="La Liga season">
-          <p>Coming soon.</p>
-        </Panel>
-        <Panel title="The squad">
-          <p>Coming soon.</p>
-        </Panel>
+        <SeasonPanel />
+        <SquadPanel />
       </main>
     </>
   );
