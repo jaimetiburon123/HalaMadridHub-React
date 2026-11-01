@@ -1,4 +1,5 @@
 // API layer: everything that talks to TheSportsDB lives here.
+// Components never call fetch directly: they use these functions through useFetch.
 import { BASE_URL, REAL_MADRID_ID, LA_LIGA_ID, REQUEST_TIMEOUT } from '../config.js';
 import { readCache, writeCache } from './cache.js';
 
@@ -7,14 +8,19 @@ const HOUR = 60 * MINUTE;
 
 // fetch + response checks. Throws a readable error on timeouts, network failures,
 // rate limiting, non-2xx responses and invalid JSON.
-async function fetchJson(endpoint) {
+// `signal` comes from the component: when it aborts (unmount, retry), the request is cancelled
+// and the original AbortError is rethrown so useFetch can ignore it.
+async function fetchJson(endpoint, signal) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+  const cancel = () => controller.abort();
+  signal?.addEventListener('abort', cancel);
 
   let response;
   try {
     response = await fetch(`${BASE_URL}/${endpoint}`, { signal: controller.signal });
   } catch (error) {
+    if (signal?.aborted) throw error;
     throw new Error(
       error.name === 'AbortError'
         ? 'TheSportsDB took too long to answer.'
@@ -22,6 +28,7 @@ async function fetchJson(endpoint) {
     );
   } finally {
     clearTimeout(timer);
+    signal?.removeEventListener('abort', cancel);
   }
 
   // The free key allows only a few requests per minute.
@@ -40,45 +47,44 @@ async function fetchJson(endpoint) {
 }
 
 // Generic GET helper: fresh cache first, then the network. If the request fails but an
-// expired copy exists, that copy is returned and onStale(savedAt) tells the UI it's old data.
-async function request(endpoint, ttl, onStale) {
+// expired copy exists, that copy is returned instead of an error.
+async function request(endpoint, ttl, signal) {
   const fresh = readCache(endpoint);
   if (fresh) return fresh.data;
 
   try {
-    const data = await fetchJson(endpoint);
+    const data = await fetchJson(endpoint, signal);
     // Only successful responses are cached, so errors are always retried.
     writeCache(endpoint, data, ttl);
     return data;
   } catch (error) {
     const stale = readCache(endpoint, { allowStale: true });
-    if (!stale) throw error;
-    onStale?.(stale.savedAt);
+    if (!stale || error.name === 'AbortError') throw error;
     return stale.data;
   }
 }
 
-export async function getTeam({ teamId = REAL_MADRID_ID, onStale } = {}) {
-  const data = await request(`lookupteam.php?id=${teamId}`, 24 * HOUR, onStale);
+export async function getTeam({ signal, teamId = REAL_MADRID_ID } = {}) {
+  const data = await request(`lookupteam.php?id=${teamId}`, 24 * HOUR, signal);
   return data?.teams?.[0] ?? null;
 }
 
-export async function getSquad({ teamId = REAL_MADRID_ID, onStale } = {}) {
-  const data = await request(`lookup_all_players.php?id=${teamId}`, 24 * HOUR, onStale);
+export async function getSquad({ signal, teamId = REAL_MADRID_ID } = {}) {
+  const data = await request(`lookup_all_players.php?id=${teamId}`, 24 * HOUR, signal);
   return Array.isArray(data?.player) ? data.player : [];
 }
 
-export async function getLastMatches({ teamId = REAL_MADRID_ID, onStale } = {}) {
-  const data = await request(`eventslast.php?id=${teamId}`, 30 * MINUTE, onStale);
+export async function getLastMatches({ signal, teamId = REAL_MADRID_ID } = {}) {
+  const data = await request(`eventslast.php?id=${teamId}`, 30 * MINUTE, signal);
   return Array.isArray(data?.results) ? data.results : [];
 }
 
-export async function getNextMatches({ teamId = REAL_MADRID_ID, onStale } = {}) {
-  const data = await request(`eventsnext.php?id=${teamId}`, 30 * MINUTE, onStale);
+export async function getNextMatches({ signal, teamId = REAL_MADRID_ID } = {}) {
+  const data = await request(`eventsnext.php?id=${teamId}`, 30 * MINUTE, signal);
   return Array.isArray(data?.events) ? data.events : [];
 }
 
-export async function getLeagueTable(season, { leagueId = LA_LIGA_ID, onStale } = {}) {
-  const data = await request(`lookuptable.php?l=${leagueId}&s=${season}`, HOUR, onStale);
+export async function getLeagueTable({ signal, season, leagueId = LA_LIGA_ID } = {}) {
+  const data = await request(`lookuptable.php?l=${leagueId}&s=${season}`, HOUR, signal);
   return Array.isArray(data?.table) ? data.table : [];
 }
