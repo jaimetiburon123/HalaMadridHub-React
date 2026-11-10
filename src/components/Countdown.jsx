@@ -17,7 +17,7 @@ export default function Countdown({ date }) {
   const minutes = Math.floor((seconds % 3600) / 60);
 
   return (
-    <p className="countdown" aria-live="off">
+    <p className="countdown">
       <span className="countdown-label">Kick-off in</span>
       {days > 0 && <strong>{days}d </strong>}
       <strong>

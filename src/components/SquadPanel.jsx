@@ -20,12 +20,7 @@ function statItems(stats) {
   return [
     { label: 'Players', value: stats.total },
     { label: 'Average age', value: stats.averageAge !== null ? stats.averageAge.toFixed(1) : '—' },
-    { label: 'Nationalities', value: stats.nationalityCount },
-    {
-      label: 'Most common',
-      value: stats.topNationality ? `${stats.topNationality[0]} (${stats.topNationality[1]})` : '—',
-    },
-    { label: 'Youngest', value: stats.youngest ? `${stats.youngest.name} (${stats.youngest.age})` : '—' },
+    { label: 'Spanish players', value: stats.spanish },
   ];
 }
 

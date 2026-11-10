@@ -6,7 +6,6 @@ import Loading from './Loading.jsx';
 import ErrorBox from './ErrorBox.jsx';
 import MatchList from './MatchList.jsx';
 import Countdown from './Countdown.jsx';
-import PredictionBox from './PredictionBox.jsx';
 
 // Defined outside the component so it is the same function on every render (stable dependency).
 async function loadMatches({ signal }) {
@@ -27,7 +26,6 @@ export default function MatchCentre() {
         <>
           <MatchList last={data.last} next={data.next} />
           {next && <Countdown date={next.date} />}
-          <PredictionBox next={next} matches={[...data.last, ...data.next]} />
         </>
       )}
     </Panel>

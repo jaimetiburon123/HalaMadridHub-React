@@ -1,16 +1,9 @@
-import TeamSide from './TeamSide.jsx';
-
-const dateFormat = new Intl.DateTimeFormat('en-GB', {
-  weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
-});
-
 // Reused for both the last result and the next match: only `label` and the data change.
 export default function MatchCard({ match, label }) {
   // Everything below is derived from the props during the render.
   const played = match.result !== null;
   const score = played ? `${match.home.score} – ${match.away.score}` : 'vs';
-  const when = match.date ? dateFormat.format(match.date) : 'Date TBC';
-  const footer = [when, match.venue].filter(Boolean).join(' · ');
+  const when = match.date ? match.date.toLocaleString('en-GB') : 'Date TBC';
 
   return (
     <article className={played ? `match-card match-card--${match.result}` : 'match-card'}>
@@ -19,11 +12,20 @@ export default function MatchCard({ match, label }) {
         <span>{match.competition}</span>
       </div>
       <div className="match-body">
-        <TeamSide team={match.home} />
+        <div className="match-team">
+          {match.home.badge && <img src={match.home.badge} alt="" />}
+          <span>{match.home.name}</span>
+        </div>
         <span className="match-score">{score}</span>
-        <TeamSide team={match.away} />
+        <div className="match-team">
+          {match.away.badge && <img src={match.away.badge} alt="" />}
+          <span>{match.away.name}</span>
+        </div>
       </div>
-      <p className="match-footer">{footer}</p>
+      <p className="match-footer">
+        {when}
+        {match.venue && ` · ${match.venue}`}
+      </p>
     </article>
   );
 }

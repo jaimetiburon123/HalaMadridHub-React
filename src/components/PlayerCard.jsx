@@ -1,15 +1,8 @@
-import { useState } from 'react';
-
-const PLACEHOLDER_PHOTO = '/player-placeholder.svg';
-
+// Presentational: it only receives a player through props and shows it.
 export default function PlayerCard({ player }) {
-  // Only real state here: whether the photo failed to load (then the placeholder is used).
-  const [photoFailed, setPhotoFailed] = useState(false);
-  const photo = player.photo && !photoFailed ? player.photo : PLACEHOLDER_PHOTO;
-
   return (
     <article className="player-card">
-      <img src={photo} alt={player.name} loading="lazy" onError={() => setPhotoFailed(true)} />
+      <img src={player.photo || '/player-placeholder.svg'} alt={player.name} loading="lazy" />
       <h3>{player.name}</h3>
       <p className="player-meta">
         {player.position}

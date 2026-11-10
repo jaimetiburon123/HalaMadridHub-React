@@ -50,23 +50,10 @@ img {
   gap: 1rem;
 }
 
-.club-badge {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
-}
-
 .club-titles h1 {
   margin: 0;
   font-size: clamp(1.6rem, 4vw, 2.4rem);
   letter-spacing: 0.02em;
-}
-
-.club-details {
-  margin: 0.25rem 0 0;
-  color: var(--gold);
-  font-size: 0.95rem;
 }
 
 /* Layout */
@@ -250,65 +237,6 @@ main {
   white-space: nowrap;
 }
 
-/* League table */
-.table-scroll {
-  overflow-x: auto;
-}
-
-.league-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-.league-table th {
-  font-size: 0.75rem;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-
-.league-table th,
-.league-table td {
-  padding: 0.6rem 0.5rem;
-  text-align: center;
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-}
-
-.league-table th:nth-child(2),
-.league-table td:nth-child(2) {
-  text-align: left;
-}
-
-.league-table .is-us {
-  background: var(--gold-soft);
-  font-weight: 700;
-}
-
-.league-table .is-us td:first-child {
-  box-shadow: inset 4px 0 0 var(--gold);
-}
-
-.form {
-  display: inline-flex;
-  gap: 3px;
-}
-
-.form-chip {
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 4px;
-  color: var(--on-dark);
-  font-size: 0.7rem;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-}
-
-.form-chip--W { background: var(--win); }
-.form-chip--D { background: var(--draw); }
-.form-chip--L { background: var(--loss); }
-
 /* Squad filters */
 .filters {
   display: flex;
@@ -431,34 +359,10 @@ main {
 }
 
 @media (max-width: 480px) {
-  .club-badge {
-    width: 52px;
-    height: 52px;
-  }
 
   .squad-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-
-/* Stale data note (network failed, saved data shown) */
-.stale-note {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 0.6rem 0.9rem;
-  border-radius: 8px;
-  background: var(--gold-soft);
-  border-left: 4px solid var(--gold);
-  font-size: 0.9rem;
-}
-
-.btn--small {
-  padding: 0.35rem 0.8rem;
-  font-size: 0.85rem;
 }
 
 /* Countdown */
@@ -491,62 +395,10 @@ main {
   font-size: 1rem;
 }
 
-/* Score prediction */
-.prediction {
-  margin-top: 1.25rem;
-  padding: 1rem;
-  border: 1px dashed var(--gold);
-  border-radius: 10px;
-  background: var(--gold-soft);
-}
-
-.prediction h3 {
-  margin: 0 0 0.75rem;
-  font-size: 1rem;
-  color: var(--navy-dark);
-}
-
-.prediction-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.prediction-form label {
-  font-weight: 600;
-}
-
-.prediction-form input {
-  width: 3.5rem;
-  padding: 0.45rem;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  font: inherit;
-  text-align: center;
-}
-
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-.prediction-note {
-  margin: 0 0 0.75rem;
-  color: var(--muted);
-}
-
-.prediction-verdict {
-  margin: 0 0 0.75rem;
-  padding: 0.6rem 0.8rem;
-  border-radius: 8px;
-  color: var(--on-dark);
-  font-weight: 600;
-}
-
-.prediction-verdict--exact { background: var(--win); }
-.prediction-verdict--winner { background: var(--navy); }
-.prediction-verdict--miss { background: var(--loss); }
 
 /* Kit theme: the wrapper paints the page, so the theme covers everything */
 .app {
@@ -573,20 +425,6 @@ main {
   color: #ff8a80;
 }
 
-.kit-away .search,
-.kit-away .prediction-form input {
-  color: var(--ink);
-  background: var(--paper);
-}
-
-.kit-away .stat-value,
-.kit-away .line-title,
-.kit-away .panel h2,
-.kit-away .prediction h3,
-.kit-away .match-score {
-  color: var(--ink);
-}
-
 /* Third kit: pink with navy details */
 .kit-third {
   --paper: #fdf0f4;
@@ -599,7 +437,6 @@ main {
   --muted: #7a5763;
 }
 
-.kit-third .club-details,
 .kit-third .countdown strong {
   color: #ffd1e0;
 }
